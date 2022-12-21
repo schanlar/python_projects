@@ -141,11 +141,15 @@ def get_word(mode:str,
                 if length == 0:
                     return random.choice(dict_)
                 else:
-                    candidate_words:List[str] = []
+                    # Use a set to avoid duplicate words in text file
+                    # biasing the random selection
+                    candidate_words:Set[str] = set() 
                     for word in dict_:
                         if len(word) == length:
-                            candidate_words.append(word)
-                    return random.choice(candidate_words)
+                            candidate_words.add(word)
+                    # as of v3.9, Python has officially deprecated random.choice() working on sets,
+                    # with the official guidance being to explicitly convert the set to a list or tuple before passing it in
+                    return random.choice(tuple(candidate_words))
             except ValueError:
                 print("length must be an integer between {} and {}".format(*get_lengths(dict_)))
             # except AssertionError:
