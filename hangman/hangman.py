@@ -41,9 +41,9 @@ def main() -> None:
 
         # Step 3: Ask if they want to play again
         play_again:str = input("Do you want to play again? (y/n) ")
-        if play_again.lower() == 'y':
+        if (play_again.lower() == 'y') or (play_again.lower() == "yes"):
             clear_monitor(False)
-        elif play_again.lower() == 'n':
+        elif (play_again.lower() == 'n') or (play_again.lower() == "no"):
             goodbye()
             return None
         else:
@@ -54,6 +54,9 @@ def main() -> None:
 
 
 class ModeError(Exception):
+    pass
+
+class LengthError(Exception):
     pass
 
 def display_hanger(body_parts:Dict[str, str]) -> None:
@@ -136,7 +139,7 @@ def get_word(mode:str,
                 valid_lengths:List[int] = [i for i in range(get_lengths(dict_)[0], get_lengths(dict_)[1]+1)]
                 valid_lengths.append(0)
                 if length not in valid_lengths:
-                    raise ValueError
+                    raise LengthError
 
                 if length == 0:
                     return random.choice(dict_)
@@ -150,7 +153,7 @@ def get_word(mode:str,
                     # as of v3.9, Python has officially deprecated random.choice() working on sets,
                     # with the official guidance being to explicitly convert the set to a list or tuple before passing it in
                     return random.choice(tuple(candidate_words))
-            except ValueError:
+            except LengthError:
                 print("length must be an integer between {} and {}".format(*get_lengths(dict_)))
             # except AssertionError:
             #     print("length must be between {} and {}".format(*get_lengths(dict_)))
