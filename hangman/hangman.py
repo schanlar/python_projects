@@ -40,16 +40,16 @@ def main() -> None:
         play_game(word, player_names=player_names(game_mode))
 
         # Step 3: Ask if they want to play again
-        play_again:str = input("Do you want to play again? (y/n) ")
-        if (play_again.lower() == 'y') or (play_again.lower() == "yes"):
-            clear_monitor(False)
-        elif (play_again.lower() == 'n') or (play_again.lower() == "no"):
-            goodbye()
-            return None
-        else:
-            print("I didn't understand that! I am exiting the game...")
-            goodbye()
-            return None
+        while True:
+            play_again:str = input("Do you want to play again? (y/n) ")
+            if (play_again.lower() == 'y') or (play_again.lower() == "yes"):
+                clear_monitor(False)
+                break
+            elif (play_again.lower() == 'n') or (play_again.lower() == "no"):
+                goodbye()
+                return None
+            else:
+                print("I didn't understand that!")
 
 
 
