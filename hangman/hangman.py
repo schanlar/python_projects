@@ -36,17 +36,18 @@ def main() -> None:
             word_exists = check_word(word, words)
 
         # Step 2: Play the game
-        if game_mode == "double": clear_monitor()
+        if game_mode == "double": clear_monitor(delay_sec=2)
         play_game(word, player_names=player_names(game_mode))
 
         # Step 3: Ask if they want to play again
         while True:
             play_again:str = input("Do you want to play again? (y/n) ")
             if (play_again.lower() == 'y') or (play_again.lower() == "yes"):
-                clear_monitor(False)
+                clear_monitor()
                 break
             elif (play_again.lower() == 'n') or (play_again.lower() == "no"):
                 goodbye()
+                clear_monitor(delay_sec=2)
                 return None
             else:
                 print("I didn't understand that!")
@@ -72,20 +73,24 @@ def display_hidden_word(hidden_word:str) -> None:
     print("The word is: {} ({} letters)".format(hidden_word, len(hidden_word)))
     return None
 
-def clear_monitor(delay:bool=True) -> None:
-    """Clears the terminal window"""
-    if delay:
-        print("Clearing...")
+def clear_monitor(delay_sec:Optional[int]=None) -> None:
+    """
+        Clears the terminal window
+        delay_sec : int or None, delay clearing the terminal window
+                    by that amount of seconds.
+    """
+    if delay_sec is None:
         if os.name == "nt": # For Windows
-            sleep(2)
             os.system("cls")
         else: # For Linux/MacOS (name == "posix")
-            sleep(2)
             os.system("clear")
     else:
+        print("Clearing the monitor...")
         if os.name == "nt":
+            sleep(delay_sec)
             os.system("cls")
         else:
+            sleep(delay_sec)
             os.system("clear")
     return None
 
@@ -179,14 +184,14 @@ def player_names(mode:str) -> Tuple[str, str]:
     if mode == "single":
         player_1:str = input("Name of player: ").capitalize()
         player_2:str = "Computer"
-        clear_monitor(False)
+        clear_monitor()
         print("Good luck {}!".format(player_1))
         print('='*40)
         return (player_1, player_2)
     elif mode == "double":
         player_1 = input("Name of player 1 (word seeker): ").capitalize()
         player_2 = input("Name of player 2 (word provider): ").capitalize()
-        clear_monitor(False)
+        clear_monitor()
         print("Good luck {}, {}!".format(player_1, player_2))
         print('='*40)
         return (player_1, player_2)
@@ -242,7 +247,7 @@ def play_game(word:str,
 
         letter = get_new_letter(chosen_letters)
         chosen_letters.append(letter)
-        clear_monitor(False)
+        clear_monitor()
 
         if letter in word:
             for idx, char in enumerate(word_characters):
