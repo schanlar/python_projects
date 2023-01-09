@@ -1,3 +1,13 @@
+"""
+battleship.py
+An OOP Python approach to play the classic battleship game.
+It supports two game modes:
+    - Single mode      : one player against the computer
+    - Two players mode : two players against each other
+@author: Savvas Chanlaridis
+@version: v2023-01-10
+"""
+
 import os
 import random
 from dataclasses import dataclass
