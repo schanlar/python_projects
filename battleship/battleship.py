@@ -1,5 +1,7 @@
 """
 battleship.py
+Requires Python-version >= 3.11 (see PEP 673 – Self Type)
+
 An OOP Python approach to play the classic battleship game.
 It supports two game modes:
     - Single mode      : one player against the computer
