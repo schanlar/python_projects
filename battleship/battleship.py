@@ -1,9 +1,12 @@
 """
 battleship.py
+Requires Python version >= 3.11 for PEP 673 – Self Type
+
 An OOP Python approach to play the classic battleship game.
 It supports two game modes:
     - Single mode      : one player against the computer
     - Two players mode : two players against each other
+    
 @author: Savvas Chanlaridis
 @version: v2023-01-10
 """
@@ -12,13 +15,15 @@ import os
 import random
 from dataclasses import dataclass
 from time import sleep
-from termcolor import colored
 
 try:
-    from typing import List, Tuple, Dict, Set, Type, NewType, Optional
+    from typing import List, Tuple, Dict, Set, Type, NewType, Optional, ClassVar, Self
+    from termcolor import colored
 except ImportError:
     os.system("pip install typing")
-    from typing import List, Tuple, Dict, Set, Type, NewType, Optional
+    from typing import List, Tuple, Dict, Set, Type, NewType, Optional, ClassVar, Self
+    os.system("python3 -m pip install --upgrade termcolor")
+    from termcolor import colored
 
 # GameConfig = NewType("GameConfig", type)
 
@@ -160,7 +165,7 @@ class GameModeError(Exception):
 
 
 class GameSetup:
-    MAX_NAME: int = 18  # maximum number of characters allowed for a name
+    MAX_NAME: ClassVar[int] = 18  # maximum number of characters allowed for a name
 
     @classmethod
     def set_max_name(cls: Type["GameSetup"], n_char: int) -> None:
@@ -361,9 +366,9 @@ class GameSetup:
 
     @dataclass
     class GameConfig:
-        mode: str
-        names: Tuple[str, str]
-        positions: Tuple[Set, Set]
+        mode: ClassVar[str]
+        names: ClassVar[Tuple[str, str]]
+        positions: ClassVar[Tuple[Set, Set]]
 
     @staticmethod
     def config() -> GameConfig:
@@ -377,7 +382,7 @@ class GameSetup:
 
 class Positions:
     # The displayd grid for player 1
-    p1_grid:Dict[str, str] = dict(
+    p1_grid: Dict[str, str] = dict(
     p1a1 = ' ', p1a2 = ' ', p1a3 = ' ', p1a4 = ' ', p1a5 = ' ',
     p1b1 = ' ', p1b2 = ' ', p1b3 = ' ', p1b4 = ' ', p1b5 = ' ',
     p1c1 = ' ', p1c2 = ' ', p1c3 = ' ', p1c4 = ' ', p1c5 = ' ',
@@ -429,15 +434,15 @@ class Player:
         self.name = name
 
     @staticmethod
-    def plays_first(config: GameSetup.GameConfig) -> Type["Player"]:
+    def plays_first(config: GameSetup.GameConfig) -> Self:
         name: str = random.choice(config.names)
         Messages.info(f"\n{name} plays first!")
         return Player(name)
 
     @staticmethod
     def next_player(
-        config: GameSetup.GameConfig, player: Type["Player"]
-    ) -> Type["Player"]:
+        config: GameSetup.GameConfig, player: Self
+    ) -> Self:
         if config.names[0] == player.name:
             Messages.info(f"\n{config.names[1]} plays next!")
             return Player(config.names[1])
@@ -445,7 +450,7 @@ class Player:
             Messages.info(f"\n{config.names[0]} plays next!")
             return Player(config.names[0])
 
-    def attack(self: Type["Player"], config: GameSetup.GameConfig) -> None:
+    def attack(self, config: GameSetup.GameConfig) -> None:
         if config.mode == "single":
             if self.name == "Computer":
                 while True:
@@ -497,7 +502,7 @@ class Player:
                     Positions.p2_grid.update({attack_position: "x"})
         else:
             while True:
-                attack_position: str = input(
+                attack_position = input(
                     "Which position do you want to attack? (e.g. a1, e5 etc): "
                 )
                 if Positions.position_is_valid(attack_position):
@@ -554,7 +559,7 @@ class Game:
     @staticmethod
     def play(config: GameSetup.GameConfig) -> None:
         Display.board(Positions.p1_grid, Positions.p2_grid, config.names)
-        current_player: Type["Player"] = Player.plays_first(config)
+        current_player: Player = Player.plays_first(config)
         while (config.positions[0] != set()) and (config.positions[1] != set()):
             print(config.positions[0])
             print(config.positions[1])
