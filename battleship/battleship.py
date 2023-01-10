@@ -1,12 +1,10 @@
 """
 battleship.py
-Requires Python version >= 3.11 for PEP 673 – Self Type
-
 An OOP Python approach to play the classic battleship game.
 It supports two game modes:
     - Single mode      : one player against the computer
     - Two players mode : two players against each other
-    
+
 @author: Savvas Chanlaridis
 @version: v2023-01-10
 """
@@ -366,9 +364,9 @@ class GameSetup:
 
     @dataclass
     class GameConfig:
-        mode: ClassVar[str]
-        names: ClassVar[Tuple[str, str]]
-        positions: ClassVar[Tuple[Set, Set]]
+        mode: str
+        names: Tuple[str, str]
+        positions: Tuple[Set, Set]
 
     @staticmethod
     def config() -> GameConfig:
@@ -561,8 +559,6 @@ class Game:
         Display.board(Positions.p1_grid, Positions.p2_grid, config.names)
         current_player: Player = Player.plays_first(config)
         while (config.positions[0] != set()) and (config.positions[1] != set()):
-            print(config.positions[0])
-            print(config.positions[1])
             if current_player.name == "Computer":
                 sleep(2)
             current_player.attack(config)
