@@ -36,16 +36,17 @@ def main() -> None:
             word_exists = check_word(word, words)
 
         # Step 2: Play the game
-        if game_mode == "double": clear_monitor(delay_sec=2)
+        if game_mode == "double":
+            clear_monitor(delay_sec=2)
         play_game(word, player_names=player_names(game_mode))
 
         # Step 3: Ask if they want to play again
         while True:
-            play_again:str = input("Do you want to play again? (y/n) ")
-            if (play_again.lower() == 'y') or (play_again.lower() == "yes"):
+            play_again: str = input("Do you want to play again? (y/n) ")
+            if (play_again.lower() == "y") or (play_again.lower() == "yes"):
                 clear_monitor()
                 break
-            elif (play_again.lower() == 'n') or (play_again.lower() == "no"):
+            elif (play_again.lower() == "n") or (play_again.lower() == "no"):
                 goodbye()
                 clear_monitor(delay_sec=2)
                 return None
@@ -53,14 +54,15 @@ def main() -> None:
                 print("I didn't understand that!")
 
 
-
 class ModeError(Exception):
     pass
+
 
 class LengthError(Exception):
     pass
 
-def display_hanger(body_parts:Dict[str, str]) -> None:
+
+def display_hanger(body_parts: Dict[str, str]) -> None:
 
     print("\t\t+-----+")
     print("\t\t|     {head}".format(**body_parts))
@@ -69,20 +71,22 @@ def display_hanger(body_parts:Dict[str, str]) -> None:
     print("\t\t|")
     return None
 
-def display_hidden_word(hidden_word:str) -> None:
+
+def display_hidden_word(hidden_word: str) -> None:
     print("The word is: {} ({} letters)".format(hidden_word, len(hidden_word)))
     return None
 
-def clear_monitor(delay_sec:Optional[int]=None) -> None:
+
+def clear_monitor(delay_sec: Optional[int] = None) -> None:
     """
-        Clears the terminal window
-        delay_sec : int or None, delay clearing the terminal window
-                    by that amount of seconds.
+    Clears the terminal window
+    delay_sec : int or None, delay clearing the terminal window
+                by that amount of seconds.
     """
     if delay_sec is None:
-        if os.name == "nt": # For Windows
+        if os.name == "nt":  # For Windows
             os.system("cls")
-        else: # For Linux/MacOS (name == "posix")
+        else:  # For Linux/MacOS (name == "posix")
             os.system("clear")
     else:
         print("Clearing the monitor...")
@@ -94,41 +98,46 @@ def clear_monitor(delay_sec:Optional[int]=None) -> None:
             os.system("clear")
     return None
 
-def load_words(file:Union[str, pathlib.Path]="words.txt") -> List[str]:
 
-    words:List[str] = []
+def load_words(file: Union[str, pathlib.Path] = "words.txt") -> List[str]:
+
+    words: List[str] = []
     with open(file) as f:
         for line in f:
-            line_words = line.strip().split('-')
+            line_words = line.strip().split("-")
             for word in line_words:
-                if len(word) >=3 :
+                if len(word) >= 3:
                     words.append(word.upper())
     return words
 
-def get_lengths(dict_:Sequence[str]) -> Tuple[int, int]:
 
-    current_min:int = 10_000
-    current_max:int = 0
+def get_lengths(dict_: Sequence[str]) -> Tuple[int, int]:
+
+    current_min: int = 10_000
+    current_max: int = 0
     for word in dict_:
-        if len(word) > current_max : current_max = len(word)
-        if len(word) < current_min : current_min = len(word)
+        if len(word) > current_max:
+            current_max = len(word)
+        if len(word) < current_min:
+            current_min = len(word)
     return (current_min, current_max)
+
 
 def select_game_mode() -> str:
 
     while True:
-        answer:str = input("Type 's/S' or 'd/D' for single or double mode respectively: ")
-        if answer.lower() == 'd':
+        answer: str = input(
+            "Type 's/S' or 'd/D' for single or double mode respectively: "
+        )
+        if answer.lower() == "d":
             return "double"
-        elif answer.lower() == 's':
+        elif answer.lower() == "s":
             return "single"
         else:
             print("I didn't understand that...")
 
-def get_word(mode:str, 
-            dict_:Sequence[str], 
-            length:int=0,
-            _tries:int=1) -> str:
+
+def get_word(mode: str, dict_: Sequence[str], length: int = 0, _tries: int = 1) -> str:
 
     if mode == "double":
         if _tries == 1:
@@ -139,9 +148,17 @@ def get_word(mode:str,
     elif mode == "single":
         while True:
             try:
-                length = int(input("Type '0' for word of random length, else give length of random word (between {} and {}): ".format(*get_lengths(dict_))))
+                length = int(
+                    input(
+                        "Type '0' for word of random length, else give length of random word (between {} and {}): ".format(
+                            *get_lengths(dict_)
+                        )
+                    )
+                )
                 # assert length in range(*get_lengths(dict_))
-                valid_lengths:List[int] = [i for i in range(get_lengths(dict_)[0], get_lengths(dict_)[1]+1)]
+                valid_lengths: List[int] = [
+                    i for i in range(get_lengths(dict_)[0], get_lengths(dict_)[1] + 1)
+                ]
                 valid_lengths.append(0)
                 if length not in valid_lengths:
                     raise LengthError
@@ -151,7 +168,7 @@ def get_word(mode:str,
                 else:
                     # Use a set to avoid duplicate words in text file
                     # biasing the random selection
-                    candidate_words:Set[str] = set() 
+                    candidate_words: Set[str] = set()
                     for word in dict_:
                         if len(word) == length:
                             candidate_words.add(word)
@@ -159,13 +176,18 @@ def get_word(mode:str,
                     # with the official guidance being to explicitly convert the set to a list or tuple before passing it in
                     return random.choice(tuple(candidate_words))
             except LengthError:
-                print("length must be an integer between {} and {}".format(*get_lengths(dict_)))
+                print(
+                    "length must be an integer between {} and {}".format(
+                        *get_lengths(dict_)
+                    )
+                )
             # except AssertionError:
             #     print("length must be between {} and {}".format(*get_lengths(dict_)))
     else:
         raise ModeError("game mode error")
 
-def check_word(word:str, dict_:Sequence[str]) -> bool:
+
+def check_word(word: str, dict_: Sequence[str]) -> bool:
     """
     Checks if the given word is valid.
     A valid word is a word that exists in
@@ -176,43 +198,47 @@ def check_word(word:str, dict_:Sequence[str]) -> bool:
     else:
         return False
 
-def player_names(mode:str) -> Tuple[str, str]:
 
-    print('-'*40)
+def player_names(mode: str) -> Tuple[str, str]:
+
+    print("-" * 40)
     print("\t Game Mode: {}".format(mode.capitalize()))
-    print('-'*40)
+    print("-" * 40)
     if mode == "single":
-        player_1:str = input("Name of player: ").capitalize()
-        player_2:str = "Computer"
+        player_1: str = input("Name of player: ").capitalize()
+        player_2: str = "Computer"
         clear_monitor()
         print("Good luck {}!".format(player_1))
-        print('='*40)
+        print("=" * 40)
         return (player_1, player_2)
     elif mode == "double":
         player_1 = input("Name of player 1 (word seeker): ").capitalize()
         player_2 = input("Name of player 2 (word provider): ").capitalize()
         clear_monitor()
         print("Good luck {}, {}!".format(player_1, player_2))
-        print('='*40)
+        print("=" * 40)
         return (player_1, player_2)
     else:
         raise ModeError("game mode error")
 
-def display_tries_left(tries:int, max_tries:int=6) -> None:
+
+def display_tries_left(tries: int, max_tries: int = 6) -> None:
 
     print("{} tries left".format(max_tries - tries))
     return None
 
-def display_used_letters(letters:List[str]) -> None:
+
+def display_used_letters(letters: List[str]) -> None:
 
     print("Chosen letters:", letters)
     return None
 
-def get_new_letter(chosen_letters:List[str]) -> str:
+
+def get_new_letter(chosen_letters: List[str]) -> str:
     # Check if letter has been used before
-    letter_is_valid:bool = False
+    letter_is_valid: bool = False
     while not letter_is_valid:
-        letter:str = input("Guess letter: ").upper()
+        letter: str = input("Guess letter: ").upper()
         if not letter.isalpha():
             print("All letters must be alphabets!")
         elif len(letter) > 1:
@@ -223,23 +249,24 @@ def get_new_letter(chosen_letters:List[str]) -> str:
             letter_is_valid = True
     return letter
 
-def play_game(word:str,
-            player_names:Tuple[str,str],
-            max_tries:int=6) -> None:
+
+def play_game(word: str, player_names: Tuple[str, str], max_tries: int = 6) -> None:
 
     # Put characters of word into a list
-    word_characters:List[str] = [char for char in word]
-    hidden_word_characters:List[str] = ['-' for _ in word]
+    word_characters: List[str] = [char for char in word]
+    hidden_word_characters: List[str] = ["-" for _ in word]
     # Initialize hidden word
-    hidden_word:str = '-'*len(word)
+    hidden_word: str = "-" * len(word)
     # Used for updating hanger function
-    body_parts:Dict[str, str] = dict(head='', torso='', left_arm='  ', right_arm='  ', left_leg='', right_leg='')
+    body_parts: Dict[str, str] = dict(
+        head="", torso="", left_arm="  ", right_arm="  ", left_leg="", right_leg=""
+    )
     # Used for showing played letters
-    chosen_letters:List[str] = [] 
+    chosen_letters: List[str] = []
     # Number of tries
-    tries:int = 0
-    
-    while (hidden_word.count('-') > 0) and (tries < max_tries):
+    tries: int = 0
+
+    while (hidden_word.count("-") > 0) and (tries < max_tries):
         display_hanger(body_parts)
         display_tries_left(tries)
         display_hidden_word(hidden_word)
@@ -253,50 +280,52 @@ def play_game(word:str,
             for idx, char in enumerate(word_characters):
                 if char == letter:
                     hidden_word_characters[idx] = char
-            # Re-initialize hidden word        
-            hidden_word = ''
-            for element in hidden_word_characters: hidden_word = hidden_word + element
+            # Re-initialize hidden word
+            hidden_word = ""
+            for element in hidden_word_characters:
+                hidden_word = hidden_word + element
         else:
             tries += 1
             if tries == 1:
-                body_parts.update({"head":'o'})
+                body_parts.update({"head": "o"})
             elif tries == 2:
-                body_parts.update({"torso":'+'})
+                body_parts.update({"torso": "+"})
             elif tries == 3:
-                body_parts.update({"left_arm":"--"})
+                body_parts.update({"left_arm": "--"})
             elif tries == 4:
-                body_parts.update({"right_arm":"--"})
+                body_parts.update({"right_arm": "--"})
             elif tries == 5:
-                body_parts.update({"left_leg":'/'})
+                body_parts.update({"left_leg": "/"})
             else:
-                body_parts.update({"right_leg":"\\"})
-    
+                body_parts.update({"right_leg": "\\"})
+
     if tries >= max_tries:
         display_hanger(body_parts)
-        print("{} wins! The word was \"{}\"".format(player_names[1].capitalize(), word))
-    elif hidden_word.count('-') == 0:
+        print('{} wins! The word was "{}"'.format(player_names[1].capitalize(), word))
+    elif hidden_word.count("-") == 0:
         display_hanger(body_parts)
-        print("{} wins! The word was \"{}\"".format(player_names[0].capitalize(), word))
+        print('{} wins! The word was "{}"'.format(player_names[0].capitalize(), word))
     return None
+
 
 def goodbye() -> None:
 
-    print("\t" + '#'*30)
-    print('\t#' + ' '*28 + '#')
-    print('\t#' + ' '*10 + "GOODBYE!" + ' '*10 + '#')
-    print('\t#' + ' '*28 + '#')
-    print("\t" + '#'*30)
+    print("\t" + "#" * 30)
+    print("\t#" + " " * 28 + "#")
+    print("\t#" + " " * 10 + "GOODBYE!" + " " * 10 + "#")
+    print("\t#" + " " * 28 + "#")
+    print("\t" + "#" * 30)
     return None
+
 
 def welcome() -> None:
 
-    print("\t" + '#'*30)
-    print('\t#' + ' '*28 + '#')
-    print('\t#' + ' '*5 + "WELCOME TO HANGMAN" + ' '*5 + '#')
-    print('\t#' + ' '*28 + '#')
-    print("\t" + '#'*30)
+    print("\t" + "#" * 30)
+    print("\t#" + " " * 28 + "#")
+    print("\t#" + " " * 5 + "WELCOME TO HANGMAN" + " " * 5 + "#")
+    print("\t#" + " " * 28 + "#")
+    print("\t" + "#" * 30)
     return None
-
 
 
 if __name__ == "__main__":
