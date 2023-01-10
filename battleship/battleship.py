@@ -474,7 +474,7 @@ class Player:
                 while True:
                     attack_position = input(
                         "Which position do you want to attack? (e.g. a1, e5 etc): "
-                    )
+                    ).lower()
                     if Positions.position_is_valid(attack_position):
                         break
                     else:
@@ -491,7 +491,7 @@ class Player:
                         )
                         attack_position = input(
                             "Which position do you want to attack? (e.g. a1, e5 etc): "
-                        )
+                        ).lower()
 
                 if attack_position in config.positions[1]:
                     # print("Successful attack!")
@@ -504,7 +504,7 @@ class Player:
             while True:
                 attack_position = input(
                     "Which position do you want to attack? (e.g. a1, e5 etc): "
-                )
+                ).lower()
                 if Positions.position_is_valid(attack_position):
                     break
                 else:
@@ -522,7 +522,7 @@ class Player:
                         )
                         attack_position = input(
                             "Which position do you want to attack? (e.g. a1, e5 etc): "
-                        )
+                        ).lower()
 
                 if attack_position in config.positions[1]:
                     # print("Successful attack!")
@@ -543,7 +543,7 @@ class Player:
                         )
                         attack_position = input(
                             "Which position do you want to attack? (e.g. a1, e5 etc): "
-                        )
+                        ).lower()
 
                 if attack_position in config.positions[0]:
                     # print("Successful attack!")
