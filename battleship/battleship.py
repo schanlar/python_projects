@@ -22,6 +22,7 @@ try:
 except ImportError:
     os.system("pip install typing")
     from typing import List, Tuple, Dict, Set, Type, NewType, Optional, ClassVar, Self
+
     os.system("python3 -m pip install --upgrade termcolor")
     from termcolor import colored
 
@@ -49,7 +50,7 @@ class Greetings:
     @staticmethod
     def welcome() -> None:
         """
-            It prints out a welcome message.
+        It prints out a welcome message.
         """
         print("\n")
         print("\t\t\t" + "#" * 30)
@@ -73,7 +74,7 @@ class Greetings:
     @staticmethod
     def goodbye() -> None:
         """
-            It prints out a farewell mesage.
+        It prints out a farewell mesage.
         """
         print("\n")
         print("\t\t\t" + "#" * 30)
@@ -88,15 +89,15 @@ class Display:
     @staticmethod
     def clear_monitor(delay_sec: Optional[int] = None) -> None:
         """
-            Clears the terminal window.
+        Clears the terminal window.
 
-            ARGS
-            ==========
-                delay_sec : int or None, delay clearing the terminal window by that amount of seconds.
-            
-            RETURNS
-            ==========
-                None.
+        ARGS
+        ==========
+            delay_sec : int or None, delay clearing the terminal window by that amount of seconds.
+
+        RETURNS
+        ==========
+            None.
         """
         if delay_sec is None:
             if os.name == "nt":  # For Windows
@@ -170,13 +171,13 @@ class GameSetup:
     @classmethod
     def set_max_name(cls: Type["GameSetup"], n_char: int) -> None:
         """
-            ARGS
-            ==========
-                n_char: int; the maximun number of characters allowed for a name
-            
-            RETURNS
-            ==========
-                None.
+        ARGS
+        ==========
+            n_char: int; the maximun number of characters allowed for a name
+
+        RETURNS
+        ==========
+            None.
         """
         cls.MAX_NAME = n_char
         return None
@@ -184,13 +185,13 @@ class GameSetup:
     @staticmethod
     def _select_game_mode() -> str:
         """
-            ARGS
-            ==========
-                None.
+        ARGS
+        ==========
+            None.
 
-            RETURNS
-            ==========
-                A string "single" or "double" indicating the game mode.
+        RETURNS
+        ==========
+            A string "single" or "double" indicating the game mode.
         """
         while True:
             Messages.info("Type 1 for one-player game or 2 for two-player game: ")
@@ -209,52 +210,38 @@ class GameSetup:
     @staticmethod
     def _get_player_names(mode: str) -> Tuple[str, str]:
         """
-            ARGS
-            ==========
-                mode: str; the mode of the game. Can be "single" or "double".
+        ARGS
+        ==========
+            mode: str; the mode of the game. Can be "single" or "double".
 
-            RETURNS
-            ==========
-                A tuple containing the players' names (when game mode is "double").
-                If the game mode is "single" it returns a tuple that contains the 
-                name of the player and the word "Computer" as the opponent's name.
+        RETURNS
+        ==========
+            A tuple containing the players' names (when game mode is "double").
+            If the game mode is "single" it returns a tuple that contains the
+            name of the player and the word "Computer" as the opponent's name.
         """
         print("-" * 40)
         print("\t Game Mode: {}".format(mode.capitalize()))
         print("-" * 40)
-        if mode == "single":
-            while True:
-                player_1: str = input("Name of player: ").capitalize()
-                if len(player_1) > GameSetup.MAX_NAME:
-                    Messages.error(
-                        "Player's name cannot exceed {} characters! Please try again.".format(
-                            GameSetup.MAX_NAME
-                        )
+        while True:
+            player_1: str = input("Name of player: ").capitalize()
+            if len(player_1) > GameSetup.MAX_NAME:
+                Messages.error(
+                    "Player's name cannot exceed {} characters! Please try again.".format(
+                        GameSetup.MAX_NAME
                     )
-                elif player_1.isspace() or not player_1:
-                    Messages.error("Player's name cannot be empty!")
-                elif not player_1.isalpha():
-                    Messages.error("All letters must be alphabets!")
-                else:
-                    break
+                )
+            elif player_1.isspace() or not player_1:
+                Messages.error("Player's name cannot be empty!")
+            elif not player_1.isalpha():
+                Messages.error("All letters must be alphabets!")
+            else:
+                break
+        if mode == "single":
             player_2: str = "Computer"
             Display.clear_monitor()
             return (player_1, player_2)
         elif mode == "double":
-            while True:
-                player_1 = input("Name of player 1: ").capitalize()
-                if len(player_1) > GameSetup.MAX_NAME:
-                    Messages.error(
-                        "Player's name cannot exceed {} characters! Please try again.".format(
-                            GameSetup.MAX_NAME
-                        )
-                    )
-                elif player_1.isspace() or not player_1:
-                    Messages.error("Player's name cannot be empty!")
-                elif not player_1.isalpha():
-                    Messages.error("All letters must be alphabets!")
-                else:
-                    break
             while True:
                 player_2 = input("Name of player 2: ").capitalize()
                 if len(player_2) > GameSetup.MAX_NAME:
@@ -276,18 +263,42 @@ class GameSetup:
 
     @staticmethod
     def _initialize_board(mode: str, names: Tuple[str, str]) -> Tuple[Set, Set]:
-        """ 
-            ARGS
-            ==========
-                mode: str; the mode of the game. Can be "single" or "double".
-                names: tuple; the names of players
+        """
+        ARGS
+        ==========
+            mode: str; the mode of the game. Can be "single" or "double".
+            names: tuple; the names of players
 
-            RETURNS
-            ==========
-                A tuple that contains the ship positions of each player.
+        RETURNS
+        ==========
+            A tuple that contains the ship positions of each player.
         """
         p1_positions: Set[str] = set()
         p2_positions: Set[str] = set()
+
+        # First player setup
+        Display.board(Positions.p1_grid, Positions.p2_grid, names)
+        Messages.info(
+            f"{names[0].capitalize()}, please indicate the square you want to position your ship (e.g. a3, e5 etc)"
+        )
+        if mode == "double":
+            Messages.warning(f"{names[1].capitalize()}, DON'T LOOK!")
+        for num in range(1, 6):
+            while True:
+                candidate_square = input(
+                    f"Enter the position of your ship #{num}: "
+                ).lower()
+                if "".join(["p1", candidate_square]) in p1_positions:
+                    Messages.error("There is already a ship in this position!")
+                elif candidate_square.isspace() or not candidate_square:
+                    Messages.error("Position cannot be empty!")
+                elif Positions.position_is_valid(candidate_square):
+                    p1_positions.add("p1" + candidate_square)
+                    break
+                else:
+                    Messages.error("This is an invalid position!")
+
+        # Second player setup
         if mode == "single":
             for _ in range(5):
                 while True:
@@ -295,48 +306,11 @@ class GameSetup:
                     if candidate_square not in p2_positions:
                         p2_positions.add(candidate_square)
                         break
-            Display.board(Positions.p1_grid, Positions.p2_grid, names)
-            Messages.info(
-                f"{names[0].capitalize()}, please indicate the square you want to position your ship (e.g. a3, e5 etc)"
-            )
-            for num in range(1, 6):
-                while True:
-                    candidate_square = input(
-                        f"Enter the position of your ship #{num}: "
-                    ).lower()
-                    if "".join(["p1", candidate_square]) in p1_positions:
-                        Messages.error("There is already a ship in this position!")
-                    elif candidate_square.isspace() or not candidate_square:
-                        Messages.error("Position cannot be empty!")
-                    elif Positions.position_is_valid(candidate_square):
-                        p1_positions.add("p1" + candidate_square)
-                        break
-                    else:
-                        Messages.error("This is an invalid position!")
             Display.clear_monitor()
             print("Good luck {}!".format(names[0]))
             print("=" * 80)
             return (p1_positions, p2_positions)
         elif mode == "double":
-            Display.board(Positions.p1_grid, Positions.p2_grid, names)
-            Messages.info(
-                f"{names[0].capitalize()}, please indicate the square you want to position your ship (e.g. a3, e5 etc)"
-            )
-            Messages.warning(f"{names[1].capitalize()}, DON'T LOOK!")
-            for num in range(1, 6):
-                while True:
-                    candidate_square = input(
-                        f"Enter the position of your ship #{num}: "
-                    ).lower()
-                    if "".join(["p1", candidate_square]) in p1_positions:
-                        Messages.error("There is already a ship in this position!")
-                    elif candidate_square.isspace() or not candidate_square:
-                        Messages.error("Position cannot be empty!")
-                    elif Positions.position_is_valid(candidate_square):
-                        p1_positions.add("p1" + candidate_square)
-                        break
-                    else:
-                        Messages.error("This is an invalid position!")
             Display.clear_monitor()
             Display.board(Positions.p1_grid, Positions.p2_grid, names)
             Messages.info(
@@ -430,8 +404,9 @@ class Positions:
 
 
 class Player:
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
+        return None
 
     @staticmethod
     def plays_first(config: GameSetup.GameConfig) -> Self:
@@ -440,9 +415,7 @@ class Player:
         return Player(name)
 
     @staticmethod
-    def next_player(
-        config: GameSetup.GameConfig, player: Self
-    ) -> Self:
+    def next_player(config: GameSetup.GameConfig, player: Self) -> Self:
         if config.names[0] == player.name:
             Messages.info(f"\n{config.names[1]} plays next!")
             return Player(config.names[1])
@@ -451,6 +424,9 @@ class Player:
             return Player(config.names[0])
 
     def attack(self, config: GameSetup.GameConfig) -> None:
+        # Seemingly unnecessary repetition of player_1 attack:
+        # try to avoid ambiguity in the unlike scenario of
+        # player_2 entering "Computer" as their name
         if config.mode == "single":
             if self.name == "Computer":
                 while True:
@@ -561,7 +537,7 @@ class Game:
         Display.board(Positions.p1_grid, Positions.p2_grid, config.names)
         current_player: Player = Player.plays_first(config)
         while (config.positions[0] != set()) and (config.positions[1] != set()):
-            if current_player.name == "Computer":
+            if (current_player.name == "Computer") and (config.mode == "single"):
                 sleep(2)
             current_player.attack(config)
             Display.clear_monitor()
