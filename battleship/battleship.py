@@ -44,9 +44,7 @@ class Messages:
     def error(text: str) -> None:
         print(colored(f"Error:\n{text}", "red"))
         return None
-
-
-class Greetings:
+    
     @staticmethod
     def welcome() -> None:
         """
@@ -554,20 +552,20 @@ class Game:
 
 
 def main() -> None:
-    Greetings.welcome()
+    Messages.welcome()
     while True:
         config: GameSetup.GameConfig = GameSetup.config()
         Game.play(config)
         answer = input("Do you want to play again? (y/n): ")
         if answer.lower() == "n" or answer.lower() == "no":
-            Greetings.goodbye()
+            Messages.goodbye()
             break
         elif answer.lower() == "y" or answer.lower() == "yes":
             Positions.reset_board()
             Display.clear_monitor()
         else:
             print("I didn't understand that! I'm exiting now...")
-            Greetings.goodbye()
+            Messages.goodbye()
             break
     return None
 
