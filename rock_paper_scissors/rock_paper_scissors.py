@@ -1,7 +1,7 @@
 """
 rock_paper_scissors.py
 
-A simole Python approach to play the classic rock-paper-scissors game.
+A simple Python approach to play the classic rock-paper-scissors game.
 It supports one game mode:
     - Single mode      : one player against the computer
 @author: Savvas Chanlaridis
