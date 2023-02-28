@@ -3,7 +3,7 @@ tic_tac_toe.py
 
 A simple Python approach to play the classic tic-tac-toe game.
 It supports one game mode:
-    - Double mode  : two players against the computer
+    - Double mode  : two players against each other
 @author: Savvas Chanlaridis
 @version: v2023-02-27
 """
