@@ -3,7 +3,7 @@ tic_tac_toe.py
 
 A simple Python approach to play the classic tic-tac-toe game.
 It supports one game mode:
-    - Double mode  : two players against each other
+    - Double mode  : two players against the computer
 @author: Savvas Chanlaridis
 @version: v2023-02-27
 """
@@ -18,7 +18,7 @@ NICKNAME_SIZE_MAX: int = 5
 class Player:
     nickname: str
     mark: str = ''
-    status: int = 0
+    status: int = -1
     score: int = 0
     row: int = -1 
     col: int = -1
@@ -30,8 +30,11 @@ def main() -> None:
     answer: str = ''
     
     # Initialize
+    print("Player 1: ")
     player1 = Player(get_nickname(NICKNAME_SIZE_MAX, "Player 1"))
     player1.mark = 'x'
+    clear()
+    print("Player 2: ")
     player2 = Player(get_nickname(NICKNAME_SIZE_MAX, "Player 2"))
     player2.mark = 'o'
     
@@ -43,10 +46,11 @@ def main() -> None:
             [' ', ' ', ' ']
         ]
         moves: int = 0 # Keep track of moves played
-        player1.status = player2.status = 0 # Reset status
+        player1.status = player2.status = -1 # Reset status
         
         while (moves < MAX_MOVES):
             if (moves == 0):
+                clear()
                 display_board(board)
             
             player1.row, player1.col = get_move(board, player1)
