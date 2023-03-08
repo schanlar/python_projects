@@ -60,18 +60,14 @@ def main() -> None:
             display_board(board)
                 
             if (moves >= 5): # needs minimum of 5 moves before someone wins
-                if (check_board(board, player1)):
+                # check if player 1 wins
+                if (is_winner(board, player1)):
                     player1.score += 1 
                     player1.status = 1 
                     player2.status = 0 
                     break
-                elif (check_board(board, player2)):
-                    player2.score += 1 
-                    player2.status = 1 
-                    player1.status = 0 
-                    break
             
-            if (moves == MAX_MOVES): break
+            if (moves == MAX_MOVES): break # last move belongs to player 1
             player2.row, player2.col = get_move(board, player2)
             board[player2.row][player2.col] = player2.mark
             moves += 1
@@ -79,12 +75,8 @@ def main() -> None:
             display_board(board)
             
             if (moves >= 5): # needs minimum of 5 moves before someone wins
-                if (check_board(board, player1)):
-                    player1.score += 1 
-                    player1.status = 1 
-                    player2.status = 0 
-                    break
-                elif (check_board(board, player2)):
+                # check if player 2 wins
+                if (is_winner(board, player2)):
                     player2.score += 1 
                     player2.status = 1 
                     player1.status = 0 
@@ -142,7 +134,7 @@ def get_move(board: List[List[str]], player: Player) -> Tuple[int, int]:
             
         return int(s[0]), int(s[1])
 
-def check_board(board: List[List[str]], player: Player) -> bool:
+def is_winner(board: List[List[str]], player: Player) -> bool:
     # Check rows for winner
     for i in range(3):
         if (board[i][0] == board[i][1] == board[i][2] == player.mark):
