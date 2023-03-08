@@ -25,7 +25,7 @@ class Player:
     
 
 def main() -> None:
-    MAX_MOVES: int = 8
+    MAX_MOVES: int = 9
     keep_playing: bool = True
     answer: str = ''
     
@@ -71,6 +71,7 @@ def main() -> None:
                     player1.status = 0 
                     break
             
+            if (moves == MAX_MOVES): break
             player2.row, player2.col = get_move(board, player2)
             board[player2.row][player2.col] = player2.mark
             moves += 1
