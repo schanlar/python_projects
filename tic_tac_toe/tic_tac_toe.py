@@ -59,7 +59,7 @@ def main() -> None:
             clear()
             display_board(board)
                 
-            if (moves >= 5): # needs minimum of 5 moves before someone wins
+            if (moves >= 5): # needs minimum of 5 moves before someone can win
                 # check if player 1 wins
                 if (is_winner(board, player1)):
                     player1.score += 1 
@@ -74,7 +74,7 @@ def main() -> None:
             clear()
             display_board(board)
             
-            if (moves >= 5): # needs minimum of 5 moves before someone wins
+            if (moves >= 5): # needs minimum of 5 moves before someone can win
                 # check if player 2 wins
                 if (is_winner(board, player2)):
                     player2.score += 1 
@@ -164,13 +164,16 @@ def display_board(board: List[List[str]]) -> None:
     
 def get_nickname(size: int, default: str) -> str:
     while (True):
-        nickname = input("Enter a nickname up to %i characters long: " % size)
-        if (len(nickname) > size):
+        try:
+            nickname = input("Enter a nickname up to %i characters long: " % size)
+            if (len(nickname) > size):
+                raise ValueError
+            elif (len(nickname) == 0 or nickname.isspace()):
+                return default
+            else:
+                return nickname
+        except ValueError:
             print("Nickname cannot be longer than %i characters" % size)
-        elif (len(nickname) == 0 or nickname.isspace()):
-            return default
-        else:
-            return nickname
             
 def clear() -> None:
     if os.name == "nt":  # For Windows
