@@ -32,8 +32,8 @@ def main() -> None:
 
     # Write data to file
     with open("out.data", "w") as outFile:
-        print("pos = %4.3e vel = %4.3e acc = %4.3e\n",
-            lander.position / ns_radius, lander.velocity, lander.acceleration
+        print("pos = %4.3e vel = %4.3e acc = %4.3e\n" % \
+            (lander.position / ns_radius, lander.velocity, lander.acceleration)
         )
 
         while (abs(lander.position) > ns_radius) and (istep < 1000):
